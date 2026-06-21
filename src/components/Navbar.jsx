@@ -88,6 +88,7 @@ function Navbar() {
   const [cartOpen, setCartOpen] = useState(false);
   const [paymentStep, setPaymentStep] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
   const { wishlist, toggleWishlist } = useWishlist();
   const { cart, removeFromCart, updateQuantity, clearCart, cartTotal, cartCount } = useCart();
   const { searchOpen, setSearchOpen, searchQuery, setSearchQuery } = useSearch();
@@ -163,13 +164,15 @@ function Navbar() {
 
       <ul className="nav-links">
         <li><a href="/" onClick={goToNewArrivals}>New Arrivals</a></li>
-        <li className="dropdown">
-          <a href="/">Categories</a>
+        <li className={`dropdown ${categoriesOpen ? 'open' : ''}`}>
+          <a href="/" onClick={(e) => { e.preventDefault(); setCategoriesOpen(prev => !prev); }}>
+            Categories
+          </a>
           <ul className="dropdown-menu">
-            <li><Link to="/sarees">Sarees</Link></li>
-            <li><Link to="/kurtas">Kurtas</Link></li>
-            <li><Link to="/lehengas">Lehengas</Link></li>
-            <li><Link to="/co-ords">Co-ords</Link></li>
+            <li><Link to="/sarees" onClick={() => setCategoriesOpen(false)}>Sarees</Link></li>
+            <li><Link to="/kurtas" onClick={() => setCategoriesOpen(false)}>Kurtas</Link></li>
+            <li><Link to="/lehengas" onClick={() => setCategoriesOpen(false)}>Lehengas</Link></li>
+            <li><Link to="/co-ords" onClick={() => setCategoriesOpen(false)}>Co-ords</Link></li>
           </ul>
         </li>
         <li><Link to="/dress-materials">Dress Materials</Link></li>
