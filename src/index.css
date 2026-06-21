@@ -233,6 +233,7 @@ nav {
 .wedding-content .eyebrow { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 10px; }
 .wedding-content h2 { font-family: 'Cormorant Garamond', serif; font-size: 40px; font-weight: 700; line-height: 1.1; margin-bottom: 12px; color: var(--text-dark); }
 .wedding-content p { font-size: 13px; color: var(--text-mid); line-height: 1.7; max-width: 260px; margin-bottom: 28px; font-weight: 300; }
+
 .wedding-img-wrap {
   position: absolute;
   right: 0;
@@ -258,6 +259,7 @@ nav {
   background: linear-gradient(to right, #f5f0e8, transparent);
   z-index: 1;
 }
+
 .new-arrivals { padding: 70px 48px; }
 .products-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
 .product-card { background: #fff; border-radius: 2px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.05); transition: box-shadow 0.3s, transform 0.3s; cursor: pointer; }
@@ -1931,7 +1933,6 @@ footer { background: var(--dark-green); color: rgba(255,255,255,0.85); padding: 
     gap: 14px;
   }
 
- /* Wedding banner */
   .wedding-banner {
     flex-direction: column;
     margin: 0 20px;
