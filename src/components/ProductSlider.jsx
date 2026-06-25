@@ -5,34 +5,38 @@ function ProductSlider({ products }) {
   const sliderRef = useRef(null);
   const intervalRef = useRef(null);
   const resumeTimeoutRef = useRef(null);
-  const resetTimeoutRef = useRef(null);
-  const isResettingRef = useRef(false);
+
+  // Render the product list TWICE back-to-back.
+  // This is what makes the loop possible — once we scroll past
+  // the first full set, the second set looks identical, so we
+  // can snap back invisibly.
+  const loopProducts = [...products, ...products];
+
+  const getSetWidth = () => {
+    const slider = sliderRef.current;
+    return slider ? slider.scrollWidth / 2 : 0;
+  };
 
   const startAutoScroll = () => {
     const slider = sliderRef.current;
     if (!slider) return;
 
-    // Always clear any existing interval before creating a new one.
-    // This makes startAutoScroll safe to call multiple times in a row.
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
 
     intervalRef.current = setInterval(() => {
-      if (isResettingRef.current) return; // wait for reset to finish, ignore ticks
+      const setWidth = getSetWidth();
+      if (!setWidth) return;
 
-      if (slider.scrollLeft + slider.clientWidth >= slider.scrollWidth - 10) {
-        isResettingRef.current = true;
-        slider.scrollTo({ left: 0, behavior: 'smooth' });
+      slider.scrollLeft += 1;
 
-        // Clear any previous pending reset-unlock before scheduling a new one
-        if (resetTimeoutRef.current) clearTimeout(resetTimeoutRef.current);
-        resetTimeoutRef.current = setTimeout(() => {
-          isResettingRef.current = false;
-        }, 600);
-      } else {
-        slider.scrollBy({ left: 1, behavior: 'instant' });
+      // Once we've scrolled past one full set, snap back by exactly
+      // one set-width. No animation here on purpose — this is the
+      // "invisible" jump that makes it feel like a continuous cycle.
+      if (slider.scrollLeft >= setWidth) {
+        slider.scrollLeft -= setWidth;
       }
     }, 20);
   };
@@ -49,7 +53,6 @@ function ProductSlider({ products }) {
     return () => {
       stopAutoScroll();
       if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
-      if (resetTimeoutRef.current) clearTimeout(resetTimeoutRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -59,14 +62,11 @@ function ProductSlider({ products }) {
     if (!slider) return;
 
     stopAutoScroll();
-    isResettingRef.current = false; // cancel any in-progress reset lock from auto-scroll
 
     const card = slider.querySelector('.product-card');
     const cardWidth = card ? card.getBoundingClientRect().width + 16 : 296;
     slider.scrollBy({ left: direction * cardWidth, behavior: 'smooth' });
 
-    // Cancel any previously queued resume before queueing a new one.
-    // This prevents multiple rapid clicks from stacking multiple intervals.
     if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
     resumeTimeoutRef.current = setTimeout(() => {
       startAutoScroll();
@@ -77,8 +77,8 @@ function ProductSlider({ products }) {
     <div className="products-slider-wrapper">
       <button className="slider-btn" onClick={() => scroll(-1)} aria-label="Previous">‹</button>
       <div className="products-slider" ref={sliderRef}>
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
+        {loopProducts.map((product, i) => (
+          <ProductCard key={`${product.id}-${i}`} product={product} />
         ))}
       </div>
       <button className="slider-btn" onClick={() => scroll(1)} aria-label="Next">›</button>

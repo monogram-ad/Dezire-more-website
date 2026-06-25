@@ -1,7 +1,9 @@
 import ProductCard from './ProductCard';
-import { readyToWear } from '../data/products';
+import { useCategory } from '../hooks/useProducts';
 
 function ReadyToWear() {
+  const { products: readyToWear, loading } = useCategory('ready-to-wear');
+
   return (
     <section className="new-arrivals">
       <div className="section-header">
@@ -10,9 +12,11 @@ function ReadyToWear() {
         <p>Stitched &amp; ready, straight to you</p>
       </div>
       <div className="products-grid products-grid-3col">
-        {readyToWear.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
+        {loading
+          ? <p>Loading...</p>
+          : readyToWear.map((product) => (
+              <ProductCard key={product._id} product={product} />
+            ))}
       </div>
     </section>
   );

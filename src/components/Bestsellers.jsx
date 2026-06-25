@@ -1,7 +1,9 @@
 import ProductCard from './ProductCard';
-import { bestsellers } from '../data/products';
+import { useTag } from '../hooks/useProducts';
 
 function Bestsellers() {
+  const { products: bestsellers, loading } = useTag('bestseller');
+
   return (
     <section className="new-arrivals">
       <div className="section-header">
@@ -10,9 +12,11 @@ function Bestsellers() {
         <p>Loved by our customers</p>
       </div>
       <div className="products-grid products-grid-3col">
-        {bestsellers.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
+        {loading
+          ? <p>Loading...</p>
+          : bestsellers.map((product) => (
+              <ProductCard key={product._id} product={product} />
+            ))}
       </div>
     </section>
   );

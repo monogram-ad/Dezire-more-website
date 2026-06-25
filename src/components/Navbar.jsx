@@ -3,7 +3,10 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useWishlist } from '../context/WishlistContext';
 import { useCart } from '../context/CartContext';
 import { useSearch } from '../context/SearchContext';
+import { useAuth } from '../context/AuthContext';
+import UserMenu from './UserMenu';
 import { sarees } from '../data/products';
+import FlowingThreads from './FlowingThreads';
 
 const ALL_PRODUCTS = [...sarees];
 
@@ -82,6 +85,8 @@ function SearchResults({ query, onClose }) {
 function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
+
+  // UI state
   const [authOpen, setAuthOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('login');
   const [wishlistOpen, setWishlistOpen] = useState(false);
@@ -89,6 +94,23 @@ function Navbar() {
   const [paymentStep, setPaymentStep] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
   const [categoriesOpen, setCategoriesOpen] = useState(false);
+
+  // Auth
+  const { user, login, signup, loading, error, setError } = useAuth();
+
+  // Login form state
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+
+  // Signup form state
+  const [signupFirstName, setSignupFirstName] = useState('');
+  const [signupLastName, setSignupLastName] = useState('');
+  const [signupEmail, setSignupEmail] = useState('');
+  const [signupPhone, setSignupPhone] = useState('');
+  const [signupPassword, setSignupPassword] = useState('');
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+
+  // Context
   const { wishlist, toggleWishlist } = useWishlist();
   const { cart, removeFromCart, updateQuantity, clearCart, cartTotal, cartCount } = useCart();
   const { searchOpen, setSearchOpen, searchQuery, setSearchQuery } = useSearch();
@@ -108,8 +130,31 @@ function Navbar() {
     }
   };
 
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const result = await login(loginEmail, loginPassword);
+    if (result.success) {
+      setAuthOpen(false);
+      setLoginEmail('');
+      setLoginPassword('');
+    }
+  };
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    if (!agreedToTerms) {
+      setError('Please agree to the Terms & Privacy Policy');
+      return;
+    }
+    const result = await signup(signupFirstName, signupLastName, signupEmail, signupPhone, signupPassword);
+    if (result.success) {
+      setAuthOpen(false);
+    }
+  };
+
   return (
-    <nav>
+   <nav style={{ position: 'relative', overflow: 'hidden' }}>
+  <FlowingThreads />
       <Link to="/" className="nav-logo" style={{ flexShrink: 0 }}>
         <div className="logo-img-stack">
           <img src="/assets/logo/logo.jpeg" alt="Dezire More" className="logo-emblem" />
@@ -153,13 +198,17 @@ function Navbar() {
           {cartCount > 0 && <span className="badge">{cartCount}</span>}
         </button>
 
-        <button className="auth-trigger-btn" onClick={() => { setAuthOpen(true); setActiveTab('login'); }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-            <circle cx="12" cy="7" r="4" />
-          </svg>
-          Login
-        </button>
+        {user ? (
+          <UserMenu />
+        ) : (
+          <button className="auth-trigger-btn" onClick={() => { setAuthOpen(true); setActiveTab('login'); setError(''); }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            Login
+          </button>
+        )}
       </div>
 
       <ul className="nav-links">
@@ -412,27 +461,47 @@ function Navbar() {
 
       {/* Auth Modal */}
       {authOpen && (
-        <div className="auth-overlay" onClick={() => setAuthOpen(false)}>
+        <div className="auth-overlay" onClick={() => { setAuthOpen(false); setError(''); }}>
           <div className="auth-modal" onClick={(e) => e.stopPropagation()}>
-            <button className="auth-close" onClick={() => setAuthOpen(false)}>✕</button>
+            <button className="auth-close" onClick={() => { setAuthOpen(false); setError(''); }}>✕</button>
             <div className="auth-tabs">
-              <button className={`auth-tab ${activeTab === 'login' ? 'active' : ''}`} onClick={() => setActiveTab('login')}>Sign In</button>
-              <button className={`auth-tab ${activeTab === 'signup' ? 'active' : ''}`} onClick={() => setActiveTab('signup')}>Create Account</button>
+              <button className={`auth-tab ${activeTab === 'login' ? 'active' : ''}`} onClick={() => { setActiveTab('login'); setError(''); }}>Sign In</button>
+              <button className={`auth-tab ${activeTab === 'signup' ? 'active' : ''}`} onClick={() => { setActiveTab('signup'); setError(''); }}>Create Account</button>
             </div>
+
+            {error && (
+              <div className="auth-error">⚠ {error}</div>
+            )}
+
             {activeTab === 'login' ? (
               <div className="auth-panel">
                 <div className="auth-eyebrow">✦ Welcome back</div>
                 <div className="auth-heading">Sign into <em>your account</em></div>
                 <label className="auth-label">Email address</label>
-                <input className="auth-input" type="email" placeholder="you@example.com" />
+                <input
+                  className="auth-input"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={loginEmail}
+                  onChange={e => setLoginEmail(e.target.value)}
+                />
                 <label className="auth-label">Password</label>
-                <input className="auth-input" type="password" placeholder="••••••••" />
+                <input
+                  className="auth-input"
+                  type="password"
+                  placeholder="••••••••"
+                  value={loginPassword}
+                  onChange={e => setLoginPassword(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && handleLogin(e)}
+                />
                 <div className="auth-row">
                   <label className="auth-check"><input type="checkbox" /> Remember me</label>
                   <span className="auth-forgot">Forgot password?</span>
                 </div>
-                <button className="auth-submit">Sign In →</button>
-                <div className="auth-switch">New here? <span onClick={() => setActiveTab('signup')}>Create a free account</span></div>
+                <button className="auth-submit" onClick={handleLogin} disabled={loading}>
+                  {loading ? 'Signing in...' : 'Sign In →'}
+                </button>
+                <div className="auth-switch">New here? <span onClick={() => { setActiveTab('signup'); setError(''); }}>Create a free account</span></div>
               </div>
             ) : (
               <div className="auth-panel">
@@ -441,24 +510,27 @@ function Navbar() {
                 <div className="auth-name-row">
                   <div>
                     <label className="auth-label">First name</label>
-                    <input className="auth-input" type="text" placeholder="Priya" />
+                    <input className="auth-input" type="text" placeholder="Priya" value={signupFirstName} onChange={e => setSignupFirstName(e.target.value)} />
                   </div>
                   <div>
                     <label className="auth-label">Last name</label>
-                    <input className="auth-input" type="text" placeholder="Sharma" />
+                    <input className="auth-input" type="text" placeholder="Sharma" value={signupLastName} onChange={e => setSignupLastName(e.target.value)} />
                   </div>
                 </div>
                 <label className="auth-label">Email address</label>
-                <input className="auth-input" type="email" placeholder="you@example.com" />
+                <input className="auth-input" type="email" placeholder="you@example.com" value={signupEmail} onChange={e => setSignupEmail(e.target.value)} />
                 <label className="auth-label">Phone (optional)</label>
-                <input className="auth-input" type="tel" placeholder="+91 98765 43210" />
+                <input className="auth-input" type="tel" placeholder="+91 98765 43210" value={signupPhone} onChange={e => setSignupPhone(e.target.value)} />
                 <label className="auth-label">Password</label>
-                <input className="auth-input" type="password" placeholder="Min. 8 characters" />
+                <input className="auth-input" type="password" placeholder="Min. 8 characters" value={signupPassword} onChange={e => setSignupPassword(e.target.value)} />
                 <label className="auth-check" style={{ marginTop: '10px' }}>
-                  <input type="checkbox" /> I agree to the <span style={{ color: '#b8902d' }}>Terms & Privacy Policy</span>
+                  <input type="checkbox" checked={agreedToTerms} onChange={e => setAgreedToTerms(e.target.checked)} />
+                  I agree to the <span style={{ color: '#b8902d' }}>Terms & Privacy Policy</span>
                 </label>
-                <button className="auth-submit" style={{ marginTop: '14px' }}>Create Account →</button>
-                <div className="auth-switch">Already have an account? <span onClick={() => setActiveTab('login')}>Sign in</span></div>
+                <button className="auth-submit" style={{ marginTop: '14px' }} onClick={handleSignup} disabled={loading}>
+                  {loading ? 'Creating account...' : 'Create Account →'}
+                </button>
+                <div className="auth-switch">Already have an account? <span onClick={() => { setActiveTab('login'); setError(''); }}>Sign in</span></div>
               </div>
             )}
           </div>

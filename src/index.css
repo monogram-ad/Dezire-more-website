@@ -1,3 +1,4 @@
+@import './policy-pages.css';
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
   --gold: #b8964e; --gold-light: #d4ae6e; --dark-green: #1e3a2f; --green: #2d5a42;
@@ -25,6 +26,7 @@ nav {
   z-index: 100;
 
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+overflow: hidden;
 }
 .nav-search-bar {
   grid-column: 2;
@@ -205,8 +207,21 @@ nav {
 .btn-primary:hover { background: transparent; color: var(--dark-green); }
 .btn-outline { background: transparent; color: var(--text-dark); padding: 14px 28px; font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; border: 2px solid var(--text-dark); cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-flex; align-items: center; }
 .btn-outline:hover { background: var(--text-dark); color: #fff; }
-.hero-image { position: relative; display: flex; justify-content: center; align-items: flex-end; height: 520px; }
-.hero-image img { height: 100%; width: 100%; object-fit: cover; object-position: top center; border-radius: 2px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+.hero-deck-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.hero-deck {
+  position: relative;
+  width: 380px;
+  height: 520px;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
 .hero-stats { display: flex; flex-direction: column; gap: 16px; padding-left: 32px; z-index: 2; }
 .stat-card { background: #fff; padding: 20px 22px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: center; border-radius: 2px; }
 .stat-card .num { font-family: 'Cormorant Garamond', serif; font-size: 34px; font-weight: 700; color: var(--text-dark); line-height: 1; }
@@ -299,7 +314,7 @@ footer { background: var(--dark-green); color: rgba(255,255,255,0.85); padding: 
 .products-slider {
   display: flex;
   overflow-x: auto;
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
   gap: 20px;
   padding: 10px 5px;
   scrollbar-width: none;
@@ -1532,44 +1547,110 @@ footer { background: var(--dark-green); color: rgba(255,255,255,0.85); padding: 
   flex-wrap: wrap;
   margin-bottom: 10px;
 }
-.hero-image img {
-  transition: opacity 0.6s ease;
+/* ── Hero Deck ── */
+.hero-deck-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
 }
 
-.hero-img-visible {
+.hero-deck {
+  position: relative;
+  width: 380px;
+  height: 500px;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.deck-card {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  transform-origin: center center;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.25s ease;
+}
+
+.deck-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.deck-top {
+  transform: translateX(0px) translateZ(0px) rotateY(0deg);
+  z-index: 3;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
   opacity: 1;
 }
 
-.hero-img-fade {
-  opacity: 0;
+.deck-mid {
+  transform: translateX(-18px) translateZ(-10px) rotateY(-3deg) scale(0.97);
+  z-index: 2;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  opacity: 0.85;
 }
 
+.deck-back {
+  transform: translateX(-36px) translateZ(-20px) rotateY(-6deg) scale(0.94);
+  z-index: 1;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  opacity: 0.65;
+}
+
+.deck-exit {
+  z-index: 10;
+  animation: deckShuffle 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes deckShuffle {
+  0% {
+    transform: translateX(0px) translateZ(0) rotateY(0deg) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(-60px) translateZ(-60px) rotateY(-20deg) scale(0.88);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateX(-100px) translateZ(-100px) rotateY(-30deg) scale(0.75);
+    opacity: 0;
+  }
+}
+
+/* Hero dots */
 .hero-dots {
-  position: absolute;
-  bottom: 16px;
-  right: 16px;
   display: flex;
   gap: 8px;
+  justify-content: center;
 }
 
 .hero-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
+  background: #ccc;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .hero-dot.active {
-  background: #fff;
-}
-.cat-card img {
-  transition: opacity 0.4s ease;
+  background: #b8902d;
+  width: 24px;
+  border-radius: 4px;
 }
 
-.cat-img-fade {
-  opacity: 0;
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-deck {
+    width: 280px;
+    height: 370px;
+  }
 }
 
 .cat-img-visible {
@@ -1695,7 +1776,7 @@ footer { background: var(--dark-green); color: rgba(255,255,255,0.85); padding: 
   align-items: stretch;
   gap: 16px;
   overflow-x: scroll;
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
   scrollbar-width: none;
 }
 
@@ -1903,10 +1984,14 @@ footer { background: var(--dark-green); color: rgba(255,255,255,0.85); padding: 
     min-height: auto;
     gap: 24px;
   }
-  .hero-image {
-    height: 320px;
-    order: -1;
-  }
+  .hero-deck-wrap {
+  order: -1;
+}
+
+.hero-deck {
+  width: 260px;
+  height: 340px;
+}
   .hero-title {
     font-size: 38px;
   }
@@ -2075,5 +2160,519 @@ footer { background: var(--dark-green); color: rgba(255,255,255,0.85); padding: 
   }
   .search-results-grid {
     grid-template-columns: 1fr;
+  }
+}
+/* ── Add this to the bottom of your existing index.css ───────────────────── */
+
+/* ── Skeleton loader ───────────────────────────────────────────────────────── */
+.skeleton { pointer-events: none; }
+
+.skeleton-img {
+  width: 100%;
+  aspect-ratio: 3/4;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #f0ece6 25%, #e6e0d8 50%, #f0ece6 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+.skeleton-line {
+  height: 13px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #f0ece6 25%, #e6e0d8 50%, #f0ece6 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  margin-bottom: 8px;
+}
+.skeleton-title    { width: 80%; }
+.skeleton-subtitle { width: 55%; }
+.skeleton-price    { width: 45%; }
+.skeleton-btn      { width: 100%; height: 38px; margin-top: 6px; }
+
+@keyframes shimmer {
+  0%   { background-position:  200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Pagination ────────────────────────────────────────────────────────────── */
+.pagination {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 48px;
+  flex-wrap: wrap;
+}
+.page-btn {
+  width: 38px; height: 38px;
+  border: 1px solid #d5cfc6;
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all .15s;
+}
+.page-btn:hover  { border-color: #1a3c34; color: #1a3c34; }
+.page-btn.active { background: #1a3c34; color: #fff; border-color: #1a3c34; }
+
+/* ── Filters bar ───────────────────────────────────────────────────────────── */
+.filters-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.results-count { font-size: 14px; color: #6b6b6b; }
+.sort-select {
+  padding: 8px 12px;
+  border: 1px solid #d5cfc6;
+  border-radius: 6px;
+  font-size: 13px;
+  background: #fff;
+  cursor: pointer;
+}
+
+/* ── Search dropdown ───────────────────────────────────────────────────────── */
+.search-bar-wrap { position: relative; }
+
+.search-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0; right: 0;
+  background: #fff;
+  border: 1px solid #d5cfc6;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.1);
+  z-index: 100;
+  overflow: hidden;
+  max-height: 420px;
+  overflow-y: auto;
+}
+.search-hint {
+  padding: 16px;
+  color: #6b6b6b;
+  font-size: 13px;
+  text-align: center;
+}
+.search-result-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  text-decoration: none;
+  color: inherit;
+  transition: background .12s;
+}
+.search-result-item:hover { background: #f7f5f0; }
+.search-result-img {
+  width: 44px; height: 54px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #e8e3db;
+  flex-shrink: 0;
+}
+.search-result-name  { display: block; font-size: 13px; font-weight: 500; }
+.search-result-price { display: block; font-size: 12px; color: #1a3c34; margin-top: 2px; }
+.search-see-all {
+  display: block;
+  text-align: center;
+  padding: 12px;
+  font-size: 13px;
+  color: #b8963e;
+  font-weight: 600;
+  border-top: 1px solid #e8e3db;
+  text-decoration: none;
+}
+.search-see-all:hover { background: #f7f5f0; }
+
+/* ── Product card hover image ──────────────────────────────────────────────── */
+.product-img-link { position: relative; display: block; overflow: hidden; }
+.product-img-hover {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity .3s;
+}
+.product-img-link:hover .product-img-hover { opacity: 1; }
+.product-img-link:hover .product-img-main  { opacity: 0; }
+
+/* ── API error ─────────────────────────────────────────────────────────────── */
+.api-error {
+  background: #fdf0ef;
+  border: 1px solid #f5c6c6;
+  color: #c0392b;
+  padding: 14px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+/* ── Empty state ───────────────────────────────────────────────────────────── */
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px;
+  color: #6b6b6b;
+  font-size: 15px;
+}
+/* ── Auth Error ── */
+.auth-error {
+  background: #fff3f3;
+  border: 1px solid #ffcdd2;
+  color: #c62828;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  margin: 0 24px;
+}
+
+/* ── User Menu ── */
+.user-menu-wrap { position: relative; }
+
+.auth-trigger-btn.user-logged-in {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #f9f4ea;
+  border: 1px solid #d4a843;
+  border-radius: 20px;
+  padding: 5px 12px 5px 6px;
+  cursor: pointer;
+}
+
+.user-avatar {
+  width: 26px;
+  height: 26px;
+  background: #2d5016;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.user-avatar-lg {
+  width: 40px;
+  height: 40px;
+  background: #2d5016;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: white;
+  border: 1px solid #e8e0d0;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  min-width: 220px;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.user-dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #f9f4ea;
+}
+
+.user-dropdown-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.user-dropdown-email {
+  font-size: 12px;
+  color: #888;
+  margin: 2px 0 0;
+}
+
+.user-dropdown-divider {
+  height: 1px;
+  background: #f0ebe0;
+}
+
+.user-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.user-dropdown-item:hover { background: #f9f4ea; }
+
+.user-logout { color: #c62828 !important; }
+.user-logout:hover { background: #fff3f3 !important; }
+/* ── Hero text transitions ── */
+.hero-text {
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.hero-text-in {
+  opacity: 1;
+  transform: translateY(0px);
+}
+
+.hero-text-out {
+  opacity: 0;
+  transform: translateY(6px);
+}
+/* ── Wedding Banner Royal ── */
+.wedding-banner {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 520px;
+  overflow: hidden;
+  background: #f5f0e8;
+}
+
+.wedding-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.wedding-img-wrap {
+  position: relative;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.wedding-banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+
+.wedding-img-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(245, 240, 232, 0.2) 0%,
+    rgba(245, 240, 232, 0.0) 60%
+  );
+}
+
+.wedding-content {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 60px 56px;
+  background: linear-gradient(135deg, #f9f5ee 0%, #f0ebe0 50%, #e8e0d0 100%);
+}
+
+/* Ornaments */
+.wedding-top-ornament,
+.wedding-bottom-ornament {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.wedding-bottom-ornament {
+  margin-top: 24px;
+  margin-bottom: 0;
+}
+
+.orn-line {
+  flex: 1;
+  height: 0.5px;
+  background: rgba(184, 144, 45, 0.4);
+}
+
+.orn-diamond {
+  color: #b8902d;
+  font-size: 8px;
+  opacity: 0.8;
+}
+
+/* Eyebrow */
+.wedding-eyebrow {
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: #b8902d;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  opacity: 0.9;
+}
+
+/* Title */
+.wedding-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 52px;
+  font-weight: 600;
+  color: #1a1a1a;
+  line-height: 1.15;
+  margin-bottom: 20px;
+}
+
+.wedding-year {
+  color: #b8902d;
+  font-style: italic;
+}
+
+/* Divider */
+.wedding-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  width: 80%;
+}
+
+.div-line {
+  flex: 1;
+  height: 0.5px;
+  background: rgba(184, 144, 45, 0.4);
+}
+
+.div-icon {
+  color: #b8902d;
+  font-size: 12px;
+}
+
+/* Subtitle */
+.wedding-subtitle {
+  font-size: 14px;
+  line-height: 1.9;
+  color: #666;
+  margin-bottom: 28px;
+  max-width: 360px;
+}
+
+/* Features */
+.wedding-features {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 32px;
+}
+
+.wedding-feat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #444;
+  letter-spacing: 0.5px;
+}
+
+.wedding-feat-divider {
+  color: rgba(184, 144, 45, 0.4);
+  font-size: 14px;
+}
+
+/* Feature SVG icons */
+.feat-svg {
+  width: 18px;
+  height: 18px;
+  stroke: #b8902d;
+  fill: none;
+  stroke-width: 1.5;
+  flex-shrink: 0;
+}
+
+/* Buttons */
+.wedding-btns {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.wedding-btn-primary {
+  background: #1c3a12;
+  color: #fff;
+  padding: 14px 28px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-decoration: none;
+  border-radius: 2px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+
+.wedding-btn-primary:hover {
+  background: #b8902d;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(184, 144, 45, 0.25);
+}
+
+.wedding-btn-outline {
+  border: 1px solid #1c3a12;
+  color: #1c3a12;
+  padding: 14px 28px;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-decoration: none;
+  border-radius: 2px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  background: transparent;
+}
+
+.wedding-btn-outline:hover {
+  background: #1c3a12;
+  color: #fff;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .wedding-banner {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .wedding-img-wrap {
+    height: 280px;
+  }
+
+  .wedding-content {
+    padding: 40px 24px;
+  }
+
+  .wedding-title {
+    font-size: 36px;
+  }
+
+  .wedding-features {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .wedding-feat-divider {
+    display: none;
   }
 }

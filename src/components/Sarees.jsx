@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import ProductCard from './ProductCard';
-import { sarees } from '../data/products';
+import { useCategory } from '../hooks/useProducts';
 
 const FILTERS = ['All', 'New Arrivals', 'Bestsellers', 'On Sale', 'Silk', 'Cotton', 'Georgette'];
 const SORT_OPTIONS = ['Featured', 'Price: Low to High', 'Price: High to Low', 'Newest First'];
@@ -8,6 +8,11 @@ const SORT_OPTIONS = ['Featured', 'Price: Low to High', 'Price: High to Low', 'N
 function Sarees() {
   const [activeFilter, setActiveFilter] = useState('All');
   const [sortBy, setSortBy] = useState('Featured');
+  const { products: sarees, loading } = useCategory('sarees', { 
+  sort: sortBy === 'Price: Low to High' ? 'price-asc' : 
+        sortBy === 'Price: High to Low' ? 'price-desc' : 
+        sortBy === 'Newest First' ? 'newest' : '' 
+});
 
   const filtered = sarees.filter(p => {
     if (activeFilter === 'All') return true;

@@ -1,7 +1,9 @@
 import ProductCard from './ProductCard';
-import { sale } from '../data/products';
+import { useTag } from '../hooks/useProducts';
 
 function Sale() {
+  const { products: sale, loading } = useTag('sale');
+
   return (
     <>
       <section className="sale-banner">
@@ -22,9 +24,11 @@ function Sale() {
           <p>Premium styles, special prices</p>
         </div>
         <div className="products-grid products-grid-3col">
-          {sale.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+          {loading
+            ? <p>Loading...</p>
+            : sale.map((product) => (
+                <ProductCard key={product._id} product={product} />
+              ))}
         </div>
       </section>
     </>
