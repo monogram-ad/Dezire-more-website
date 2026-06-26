@@ -18,38 +18,46 @@ import SizeGuide from './components/SizeGuide';
 import ShippingPolicy from './components/ShippingPolicy';
 import ExchangePolicy from './components/ExchangePolicy';
 import ContactUs from './components/ContactUs';
+import WelcomePopup from './components/WelcomePopup';
+import ScrollToTop from './components/ScrollToTop';
+import Chatbot from './components/Chatbot';
 
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <WishlistProvider>
-          <SearchProvider>
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Layout />}>
-                  <Route index element={<Home />} />
-                  <Route path="sarees" element={<Sarees />} />
-                  <Route path="kurtas" element={<Kurtas />} />
-                  <Route path="lehengas" element={<Lehengas />} />
-                  <Route path="co-ords" element={<CoOrds />} />
-                  <Route path="dress-materials" element={<DressMaterials />} />
-                  <Route path="ready-to-wear" element={<ReadyToWear />} />
-                  <Route path="western-apparels" element={<WesternApparels />} />
-                  <Route path="bestsellers" element={<Bestsellers />} />
-                  <Route path="sale" element={<Sale />} />
-                  {/* Help Pages */}
-                  <Route path="size-guide" element={<SizeGuide />} />
-                  <Route path="shipping-policy" element={<ShippingPolicy />} />
-                  <Route path="exchange-policy" element={<ExchangePolicy />} />
-                  <Route path="contact" element={<ContactUs />} />
-                </Route>
-              </Routes>
-            </BrowserRouter>
-          </SearchProvider>
-        </WishlistProvider>
-      </CartProvider>
-    </AuthProvider>
+    <>
+      <WelcomePopup />
+      <AuthProvider>
+        <CartProvider>
+          <WishlistProvider>
+            <SearchProvider>
+              <BrowserRouter>
+                <ScrollToTop />
+                <Routes>
+                  <Route path="/" element={<Layout />}>
+                    <Route index element={<Home />} />
+                    <Route path="sarees" element={<Sarees />} />
+                    <Route path="kurtas" element={<Kurtas />} />
+                    <Route path="lehengas" element={<Lehengas />} />
+                    <Route path="co-ords" element={<CoOrds />} />
+                    <Route path="dress-materials" element={<DressMaterials />} />
+                    <Route path="ready-to-wear" element={<ReadyToWear />} />
+                    <Route path="western-apparels" element={<WesternApparels />} />
+                    <Route path="bestsellers" element={<Bestsellers />} />
+                    <Route path="sale" element={<Sale />} />
+                    {/* Help Pages */}
+                    <Route path="size-guide" element={<SizeGuide />} />
+                    <Route path="shipping-policy" element={<ShippingPolicy />} />
+                    <Route path="exchange-policy" element={<ExchangePolicy />} />
+                    <Route path="contact" element={<ContactUs />} />
+                  </Route>
+                </Routes>
+              </BrowserRouter>
+           </SearchProvider>
+      </WishlistProvider>
+    </CartProvider>
+  </AuthProvider>
+  <Chatbot />
+</>
   );
 }
 

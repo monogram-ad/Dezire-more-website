@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-
 const heroSlides = [
   {
     image: "/assets/hero/hero1.jpeg",
@@ -71,7 +70,7 @@ function Hero() {
   const slide = heroSlides[current];
 
   return (
-    <section className="hero" style={{ position: 'relative', overflow: 'hidden' }}>
+    <section className="hero">
       <div className={`hero-text ${textVisible ? "hero-text-in" : "hero-text-out"}`}>
         <p className="hero-eyebrow">{slide.eyebrow}</p>
         <h2 className="hero-title">

@@ -12,21 +12,21 @@ body { font-family: 'Montserrat', sans-serif; background: var(--cream); color: v
 nav {
   background: #fff;
   border-bottom: 1px solid var(--border);
-  padding: 16px 32px 0;
+  padding: 12px 48px 0;
 
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: auto 1fr auto;
   grid-template-rows: auto auto;
   align-items: center;
-  column-gap: 28px;
-  row-gap: 14px;
+  column-gap: 40px;
+  row-gap: 12px;
 
   position: sticky;
   top: 0;
   z-index: 100;
 
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-overflow: hidden;
+  overflow: hidden;
 }
 .nav-search-bar {
   grid-column: 2;
@@ -38,7 +38,7 @@ overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 24px;
   padding: 11px 18px;
-  max-width: 420px;
+  max-width: 600px;
   width: 100%;
   margin: 0 auto;
   cursor: pointer;
@@ -2674,5 +2674,335 @@ footer { background: var(--dark-green); color: rgba(255,255,255,0.85); padding: 
 
   .wedding-feat-divider {
     display: none;
+  }
+}
+/* ===== Sale Section — Royal Maroon & Gold ===== */
+/* Add this block to index.css. Uses scoped selectors so it overrides
+   your existing .sale-banner / .btn-gold rules without touching other sections. */
+
+.sale-banner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 48px;
+  min-height: 520px;
+  padding: 64px 80px;
+  background: #F8F4EC;
+  overflow: hidden;
+}
+
+.sale-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(176, 141, 69, 0.08), transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(74, 14, 14, 0.06), transparent 45%);
+  pointer-events: none;
+}
+
+.sale-banner .sale-content {
+  position: relative;
+  z-index: 2;
+  max-width: 480px;
+  flex: 1 1 420px;
+}
+
+.sale-banner .eyebrow {
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #B08D45;
+  margin: 0 0 14px;
+}
+
+.sale-banner h2 {
+  font-family: var(--font-serif, 'Playfair Display', Georgia, serif);
+  font-size: 52px;
+  font-weight: 600;
+  line-height: 1.05;
+  margin: 0 0 22px;
+  color: #2A0808;
+}
+
+.sale-percent-frame {
+  display: inline-block;
+  border-top: 1px solid #B08D45;
+  border-bottom: 1px solid #B08D45;
+  padding: 10px 0;
+  margin-bottom: 22px;
+}
+
+.sale-banner .sale-percent {
+  font-family: var(--font-serif, 'Playfair Display', Georgia, serif);
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #4A0E0E;
+}
+
+.sale-banner p:not(.eyebrow) {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #5C4A3A;
+  margin: 0 0 30px;
+  max-width: 400px;
+}
+
+.sale-banner .btn-gold {
+  display: inline-block;
+  background: #4A0E0E;
+  color: #F8F4EC;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 14px 36px;
+  border: 1px solid #4A0E0E;
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+.sale-banner .btn-gold:hover {
+  background: transparent;
+  color: #4A0E0E;
+}
+
+/* Photo card stack — tilted, peeking, layered like a polaroid pair */
+.sale-photo-stack {
+  position: relative;
+  z-index: 2;
+  flex: 1 1 360px;
+  max-width: 420px;
+  height: 460px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sale-photo-card {
+  position: absolute;
+  border-radius: 16px;
+  box-shadow: 0 24px 48px rgba(42, 8, 8, 0.18);
+}
+
+.sale-photo-card-back {
+  width: 78%;
+  height: 88%;
+  background: #4A0E0E;
+  border: 1px solid #B08D45;
+  transform: rotate(7deg) translate(18px, 8px);
+}
+
+.sale-photo-card-front {
+  width: 88%;
+  height: 94%;
+  object-fit: cover;
+  border: 6px solid #F8F4EC;
+  transform: rotate(-4deg);
+  outline: 1px solid rgba(176, 141, 69, 0.4);
+}
+
+/* Section header for the product grid below the banner */
+#sale-products .section-header {
+  text-align: center;
+  margin: 64px 0 40px;
+}
+
+#sale-products .section-header .eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #B08D45;
+  margin: 0 0 8px;
+}
+
+#sale-products .section-header h2 {
+  font-family: var(--font-serif, 'Playfair Display', Georgia, serif);
+  font-size: 34px;
+  font-weight: 600;
+  color: #2A0808;
+  margin: 0 0 14px;
+}
+
+#sale-products .divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+#sale-products .divider::before,
+#sale-products .divider::after {
+  content: "";
+  width: 64px;
+  height: 1px;
+  background: #B08D45;
+}
+
+#sale-products .diamond {
+  width: 6px;
+  height: 6px;
+  background: #B08D45;
+  transform: rotate(45deg);
+  display: inline-block;
+}
+
+/* Mobile */
+@media (max-width: 900px) {
+  .sale-banner {
+    flex-direction: column;
+    padding: 48px 28px;
+    min-height: auto;
+    gap: 36px;
+  }
+  .sale-banner .sale-content {
+    max-width: 100%;
+    text-align: center;
+  }
+  .sale-percent-frame {
+    display: block;
+  }
+  .sale-banner h2 {
+    font-size: 38px;
+  }
+  .sale-photo-stack {
+    width: 100%;
+    max-width: 320px;
+    height: 360px;
+  }
+}
+/* ===== Welcome Popup — Royal Maroon & Gold ===== */
+/* Add this block to index.css */
+
+.welcome-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(42, 8, 8, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: dm-fade-in 0.3s ease;
+  padding: 20px;
+}
+
+@keyframes dm-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.welcome-popup-card {
+  position: relative;
+  background: #F8F4EC;
+  max-width: 440px;
+  width: 100%;
+  padding: 48px 40px;
+  text-align: center;
+  border-radius: 4px;
+  box-shadow: 0 30px 60px rgba(42, 8, 8, 0.35);
+  animation: dm-pop-in 0.35s ease;
+}
+
+@keyframes dm-pop-in {
+  from { opacity: 0; transform: scale(0.92) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.welcome-popup-card::before {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border: 1px solid rgba(176, 141, 69, 0.45);
+  pointer-events: none;
+}
+
+.welcome-popup-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 22px;
+  line-height: 1;
+  color: #4A0E0E;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  transition: background 0.2s ease;
+}
+
+.welcome-popup-close:hover {
+  background: rgba(74, 14, 14, 0.08);
+}
+
+.welcome-popup-eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #B08D45;
+  font-style: italic;
+  margin: 0 0 12px;
+}
+
+.welcome-popup-title {
+  font-family: var(--font-serif, 'Playfair Display', Georgia, serif);
+  font-size: 30px;
+  font-weight: 600;
+  color: #2A0808;
+  margin: 0 0 16px;
+  line-height: 1.15;
+}
+
+.welcome-popup-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #5C4A3A;
+  margin: 0 0 24px;
+}
+
+.welcome-popup-frame {
+  display: inline-block;
+  border-top: 1px solid #B08D45;
+  border-bottom: 1px solid #B08D45;
+  padding: 10px 24px;
+  margin-bottom: 26px;
+}
+
+.welcome-popup-code {
+  font-family: var(--font-serif, 'Playfair Display', Georgia, serif);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #4A0E0E;
+}
+
+.welcome-popup-btn {
+  display: inline-block;
+  background: #4A0E0E;
+  color: #F8F4EC;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 14px 32px;
+  border: 1px solid #4A0E0E;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.welcome-popup-btn:hover {
+  background: transparent;
+  color: #4A0E0E;
+}
+
+@media (max-width: 480px) {
+  .welcome-popup-card {
+    padding: 36px 24px;
+  }
+  .welcome-popup-title {
+    font-size: 24px;
   }
 }
