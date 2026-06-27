@@ -2,31 +2,30 @@ import { useState } from 'react';
 import ProductCard from './ProductCard';
 import { useCategory } from '../hooks/useProducts';
 
-const FILTERS = ['All', 'New Arrivals', 'Bestsellers', 'On Sale', 'Silk', 'Cotton', 'Georgette'];
-const SORT_OPTIONS = ['Featured', 'Price: Low to High', 'Price: High to Low', 'Newest First'];
+const FILTERS = [
+  { label: 'All',          value: '' },
+  { label: 'New Arrivals', value: 'new-arrival' },
+  { label: 'Bestsellers',  value: 'bestseller' },
+  { label: 'On Sale',      value: 'sale' },
+];
+
+const SORT_OPTIONS = [
+  { label: 'Featured',           value: '' },
+  { label: 'Price: Low to High', value: 'price-asc' },
+  { label: 'Price: High to Low', value: 'price-desc' },
+  { label: 'Newest First',       value: 'newest' },
+  { label: 'Top Rated',          value: 'rating' },
+];
 
 function Sarees() {
-  const [activeFilter, setActiveFilter] = useState('All');
-  const [sortBy, setSortBy] = useState('Featured');
-  const { products: sarees, loading } = useCategory('sarees', { 
-  sort: sortBy === 'Price: Low to High' ? 'price-asc' : 
-        sortBy === 'Price: High to Low' ? 'price-desc' : 
-        sortBy === 'Newest First' ? 'newest' : '' 
-});
+  const [activeFilter, setActiveFilter] = useState('');
+  const [sort,         setSort]         = useState('');
 
-  const filtered = sarees.filter(p => {
-    if (activeFilter === 'All') return true;
-    if (activeFilter === 'New Arrivals') return p.isNew;
-    if (activeFilter === 'Bestsellers') return p.isBestseller;
-    if (activeFilter === 'On Sale') return p.originalPrice > p.price;
-    return p.category === activeFilter;
-  });
+  const filters = {};
+  if (sort)         filters.sort = sort;
+  if (activeFilter) filters.tag  = activeFilter;
 
-  const sorted = [...filtered].sort((a, b) => {
-    if (sortBy === 'Price: Low to High') return a.price - b.price;
-    if (sortBy === 'Price: High to Low') return b.price - a.price;
-    return 0;
-  });
+  const { products, total, loading, error } = useCategory('sarees', filters);
 
   return (
     <section className="sarees-page">
@@ -35,7 +34,7 @@ function Sarees() {
       <div className="sarees-page-header">
         <h1>Sarees</h1>
         <div className="divider"><span className="diamond"></span></div>
-        <p>Showing {sorted.length} styles</p>
+        <p>Showing {loading ? '…' : total} styles</p>
       </div>
 
       {/* Filter + Sort Bar */}
@@ -44,11 +43,11 @@ function Sarees() {
           <span className="filter-label">Filter:</span>
           {FILTERS.map(f => (
             <button
-              key={f}
-              className={`filter-btn ${activeFilter === f ? 'active' : ''}`}
-              onClick={() => setActiveFilter(f)}
+              key={f.value}
+              className={`filter-btn ${activeFilter === f.value ? 'active' : ''}`}
+              onClick={() => setActiveFilter(f.value)}
             >
-              {f}
+              {f.label}
             </button>
           ))}
         </div>
@@ -56,20 +55,32 @@ function Sarees() {
           <span className="filter-label">Sort By</span>
           <select
             className="sort-select"
-            value={sortBy}
-            onChange={e => setSortBy(e.target.value)}
+            value={sort}
+            onChange={e => setSort(e.target.value)}
           >
-            {SORT_OPTIONS.map(o => <option key={o}>{o}</option>)}
+            {SORT_OPTIONS.map(o => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
           </select>
         </div>
       </div>
 
+      {/* States */}
+      {loading && <p className="page-loading">Loading sarees…</p>}
+      {error   && <p className="page-error">Could not load products. Is the backend running?</p>}
+
       {/* Grid */}
-      <div className="products-grid products-grid-3col">
-        {sorted.map(product => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
+      {!loading && !error && (
+        products.length === 0
+          ? <p className="page-empty">No sarees found. Add some from the admin panel!</p>
+          : (
+            <div className="products-grid products-grid-3col">
+              {products.map(product => (
+                <ProductCard key={product._id || product.id} product={product} />
+              ))}
+            </div>
+          )
+      )}
 
     </section>
   );

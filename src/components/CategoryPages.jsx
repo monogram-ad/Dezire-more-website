@@ -1,3 +1,6 @@
+// ─────────────────────────────────────────────────────────────────
+// CoOrds.jsx
+// ─────────────────────────────────────────────────────────────────
 import { useState } from 'react';
 import ProductCard from './ProductCard';
 import { useCategory } from '../hooks/useProducts';
@@ -17,7 +20,8 @@ const SORT_OPTIONS = [
   { label: 'Top Rated',          value: 'rating' },
 ];
 
-function Lehengas() {
+// Reusable page layout — avoids copy-pasting JSX for every category
+function CategoryPage({ title, category }) {
   const [activeFilter, setActiveFilter] = useState('');
   const [sort,         setSort]         = useState('');
 
@@ -25,13 +29,13 @@ function Lehengas() {
   if (sort)         filters.sort = sort;
   if (activeFilter) filters.tag  = activeFilter;
 
-  const { products, total, loading, error } = useCategory('lehengas', filters);
+  const { products, total, loading, error } = useCategory(category, filters);
 
   return (
     <section className="sarees-page">
 
       <div className="sarees-page-header">
-        <h1>Lehengas</h1>
+        <h1>{title}</h1>
         <div className="divider"><span className="diamond"></span></div>
         <p>Showing {loading ? '…' : total} styles</p>
       </div>
@@ -63,12 +67,12 @@ function Lehengas() {
         </div>
       </div>
 
-      {loading && <p className="page-loading">Loading lehengas…</p>}
+      {loading && <p className="page-loading">Loading {title.toLowerCase()}…</p>}
       {error   && <p className="page-error">Could not load products. Is the backend running?</p>}
 
       {!loading && !error && (
         products.length === 0
-          ? <p className="page-empty">No lehengas found. Add some from the admin panel!</p>
+          ? <p className="page-empty">No {title.toLowerCase()} found. Add some from the admin panel!</p>
           : (
             <div className="products-grid products-grid-3col">
               {products.map(product => (
@@ -82,4 +86,9 @@ function Lehengas() {
   );
 }
 
-export default Lehengas;
+export function CoOrds()          { return <CategoryPage title="Co-ords"          category="coords"          />; }
+export function DressMaterials()  { return <CategoryPage title="Dress Materials"  category="dress-materials" />; }
+export function ReadyToWear()     { return <CategoryPage title="Ready to Wear"    category="ready-to-wear"   />; }
+export function WesternApparels() { return <CategoryPage title="Western Apparels" category="western"         />; }
+
+export default CategoryPage;

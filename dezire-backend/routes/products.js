@@ -38,15 +38,12 @@ const buildSort = (sort) => {
 
 // ─── PUBLIC ROUTES ────────────────────────────────────────────────────────────
 
-// GET /api/products — all products with filters + pagination
+// GET /api/products
 router.get('/', async (req, res) => {
   try {
     const { page = 1, limit = 12, sort, search, ...filters } = req.query;
     const filter = buildFilter(filters);
-
-    if (search) {
-      filter.$text = { $search: search };
-    }
+    if (search) filter.$text = { $search: search };
 
     const [data, total] = await Promise.all([
       Product.find(filter)
@@ -57,13 +54,7 @@ router.get('/', async (req, res) => {
       Product.countDocuments(filter),
     ]);
 
-    res.json({
-      data,
-      total,
-      page: Number(page),
-      limit: Number(limit),
-      totalPages: Math.ceil(total / limit),
-    });
+    res.json({ data, total, page: Number(page), limit: Number(limit), totalPages: Math.ceil(total / limit) });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -84,19 +75,13 @@ router.get('/category/:category', async (req, res) => {
       Product.countDocuments(filter),
     ]);
 
-    res.json({
-      data,
-      total,
-      page: Number(page),
-      limit: Number(limit),
-      totalPages: Math.ceil(total / limit),
-    });
+    res.json({ data, total, page: Number(page), limit: Number(limit), totalPages: Math.ceil(total / limit) });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// GET /api/products/tag/:tag — bestsellers, new-arrivals, sale etc
+// GET /api/products/tag/:tag
 router.get('/tag/:tag', async (req, res) => {
   try {
     const { page = 1, limit = 12, sort } = req.query;
@@ -117,7 +102,7 @@ router.get('/tag/:tag', async (req, res) => {
   }
 });
 
-// GET /api/products/home — homepage sections in one call
+// GET /api/products/home
 router.get('/home', async (req, res) => {
   try {
     const [newArrivals, bestsellers, sale, totalProducts] = await Promise.all([
@@ -173,7 +158,7 @@ router.get('/search', async (req, res) => {
   }
 });
 
-// GET /api/products/:id — single product + related
+// GET /api/products/:id
 router.get('/:id', async (req, res) => {
   try {
     const product = await Product.findById(req.params.id).lean();
@@ -194,7 +179,6 @@ router.get('/:id', async (req, res) => {
 // ─── ADMIN ROUTES (protected) ─────────────────────────────────────────────────
 
 // POST /api/products — create product with images
-// upload.array('images', 5) means: accept field named "images", max 5 files
 router.post('/', adminAuth, upload.array('images', 5), async (req, res) => {
   try {
     const {
@@ -203,10 +187,9 @@ router.post('/', adminAuth, upload.array('images', 5), async (req, res) => {
       inStock, stockCount, tags, sku,
     } = req.body;
 
-    // req.files comes from multer — already uploaded to Cloudinary
     const images = (req.files || []).map(file => ({
-      url:      file.path,       // Cloudinary URL
-      publicId: file.filename,   // Cloudinary public_id
+      url:      `http://localhost:5000/uploads/${file.filename}`,
+      publicId: file.filename,
     }));
 
     const product = await Product.create({
@@ -233,7 +216,7 @@ router.post('/', adminAuth, upload.array('images', 5), async (req, res) => {
   }
 });
 
-// PATCH /api/products/:id — update product details (no image change)
+// PATCH /api/products/:id — update product details
 router.patch('/:id', adminAuth, async (req, res) => {
   try {
     const allowed = [
@@ -262,7 +245,7 @@ router.patch('/:id', adminAuth, async (req, res) => {
 router.post('/:id/images', adminAuth, upload.array('images', 5), async (req, res) => {
   try {
     const newImages = (req.files || []).map(file => ({
-      url:      file.path,
+      url:      `http://localhost:5000/uploads/${file.filename}`,
       publicId: file.filename,
     }));
 
@@ -282,21 +265,17 @@ router.post('/:id/images', adminAuth, upload.array('images', 5), async (req, res
 // DELETE /api/products/:id/images/:publicId — remove one image
 router.delete('/:id/images/:publicId', adminAuth, async (req, res) => {
   try {
-    // Delete from Cloudinary
     await cloudinary.uploader.destroy(req.params.publicId);
-
-    // Remove from product
     await Product.findByIdAndUpdate(req.params.id, {
       $pull: { images: { publicId: req.params.publicId } },
     });
-
     res.json({ success: true });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 });
 
-// DELETE /api/products/:id — soft delete (sets isActive: false)
+// DELETE /api/products/:id — soft delete
 router.delete('/:id', adminAuth, async (req, res) => {
   try {
     const product = await Product.findByIdAndUpdate(

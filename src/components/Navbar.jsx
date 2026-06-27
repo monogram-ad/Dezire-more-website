@@ -153,7 +153,7 @@ function Navbar() {
   };
 
   return (
-   <nav style={{ position: 'relative', overflow: 'hidden' }}>
+   <nav style={{ position: 'relative' }}>
   <FlowingThreads />
       <Link to="/" className="nav-logo" style={{ flexShrink: 0 }}>
         <div className="logo-img-stack">

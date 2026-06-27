@@ -26,7 +26,6 @@ nav {
   z-index: 100;
 
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-  overflow: hidden;
 }
 .nav-search-bar {
   grid-column: 2;
@@ -69,6 +68,7 @@ nav {
   list-style: none;
   gap: 34px;
   width: 100%;
+  overflow: visible;
 }
 .nav-logo {
   grid-column: 1;
@@ -1961,7 +1961,7 @@ footer { background: var(--dark-green); color: rgba(255,255,255,0.85); padding: 
 }
 
 @media (max-width: 768px) {
-  /* Nav links - swipeable on mobile, like Amazon */
+  
   .nav-links {
     justify-content: flex-start;
     overflow-x: auto;
@@ -3006,3 +3006,6 @@ footer { background: var(--dark-green); color: rgba(255,255,255,0.85); padding: 
     font-size: 24px;
   }
 }
+.page-loading { text-align: center; padding: 60px; color: #6b6b6b; }
+.page-error   { text-align: center; padding: 60px; color: #c0392b; }
+.page-empty   { text-align: center; padding: 60px; color: #6b6b6b; }
